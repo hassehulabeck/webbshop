@@ -1,0 +1,128 @@
+<html>
+<head>
+  <title>webbshop</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vuex@3.0.1/dist/vuex.js"></script>
+
+  <style>
+    ul {
+      border: thin dotted gray;
+      padding: 2em;
+      margin: 1em;
+    }
+    li {
+      background-color: pink;
+      color: white;
+      font-family: 'verdana';
+      font-weight: 700;
+      border-radius: 8px;
+      padding: 1em;
+      min-height: 100px;
+      margin: 1em;
+    }
+    ul.varukorg li {
+      background-color: wheat;
+    }
+    .price {
+      color: yellow;
+      font-size: 1.5em;
+      text-shadow: 2px 2px 3px red;
+    }
+  </style>
+
+
+</head>
+<body>
+  <div id="app">
+    <product-list></product-list>
+    <varu-korg></varu-korg>
+  </div>
+</body>
+</html>
+<script>
+  const store = new Vuex.Store({
+    state: {
+      products: [
+        {
+          name: "Lax",
+          price: 99
+        },
+        {
+          name: "Torsk",
+          price: 179
+        },
+        {
+          name: "Kolja",
+          price: 79
+        }
+      ],
+      varukorg: []
+    },
+    mutations: {
+      atc(state, product) {
+        state.varukorg.push(product)
+      },
+      rfc(state, index) {
+        state.varukorg = state.varukorg.filter(function(product){
+          product.index != index
+        })
+      }
+    }
+  })
+
+  var productList = Vue.component('product-list', {
+    computed: {
+      products() {
+        return store.state.products
+      }
+    },
+    template: `
+    <ul>
+      <li v-for='product,index in products' :key='index'>
+        {{ product.name }}
+        <span class='price'>
+          {{ product.price }} :-
+        </span>
+        <button @click="atc(product)">Add to cart</button>
+      </li>
+    </ul>
+    `,
+    methods: {
+      atc(product) {
+        store.commit('atc', product)
+      }
+    }
+  })
+
+  var varukorg = Vue.component('varu-korg',{
+    computed: {
+      varukorg() {
+        return store.state.varukorg
+      }
+    },
+    template: `
+    <ul class='varukorg' v-if="varukorg.length>0">
+      <li v-for='vara,index in varukorg' :key='index'>
+        {{ vara.name }}
+        <span class='price'>
+          {{ vara.price }} :-
+        </span>
+        <button @click="rfc(vara)">X</button>
+      </li>
+    </ul>
+    `,
+    methods: {
+      rfc(product) {
+        store.commit('rfc', product.index)
+      }
+    }
+  })
+
+  const app = new Vue({
+    el: '#app',
+    components: {
+      productList,
+      varukorg
+    }
+  })
+</script>
