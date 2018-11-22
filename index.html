@@ -63,9 +63,7 @@
         state.varukorg.push(product)
       },
       rfc(state, index) {
-        state.varukorg = state.varukorg.filter(function(product){
-          product.index != index
-        })
+        state.varukorg.splice(index, 1)
       }
     }
   })
