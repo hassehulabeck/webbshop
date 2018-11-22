@@ -62,7 +62,8 @@
           price: 79
         }
       ],
-      varukorg: []
+      varukorg: [],
+      totalCost: 0
     },
     mutations: {
       atc(state, product) {
@@ -102,10 +103,16 @@
     computed: {
       varukorg() {
         return store.state.varukorg
+      },
+      totalCost() {
+        return store.state.varukorg.reduce(function(accumulator, current) {
+          return accumulator + current.price
+        }, 0)
       }
     },
     template: `
     <ul class='varukorg' v-if="varukorg.length>0">
+      <p>Total kostnad: {{ totalCost }} </p>
       <li v-for='vara,index in varukorg' :key='index'>
         {{ vara.name }}
         <span class='price'>
